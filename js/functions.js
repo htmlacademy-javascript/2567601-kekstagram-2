@@ -13,9 +13,14 @@ const findNumber = (str) => {
   let result = '';
 
   for (const i of String(str).split('')) {
-    isNaN(parseInt(i, 10)) ? result : (result += parseInt(i, 10));
+    if (!isNaN(parseInt(i, 10))) {
+      result += parseInt(i, 10);
+    }
   }
 
-  return result.length > 0 ? Number(result) : parseInt('a');
+  return result.length > 0 ? Number(result) : parseInt('a', 10);
 };
 
+hasValidLength('dfddd', 10);
+isPalindrome('lalal');
+findNumber('qwert!22');
