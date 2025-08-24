@@ -42,12 +42,13 @@ const commentId = getRandomId();
 
 const createComments = () => ({
   id: commentId(),
-  avatar: `mg/avatar-${getRandomInteger(1, 6)}.svg`,
+  avatar: `img/avatar-${getRandomInteger(1, 6)}.svg`,
   message: getRandomArrayElement(MESSAGE),
   name: getRandomArrayElement(NAMES),
 });
 
 const createPhoto = () => ({
+  id: photoId(),
   url: `photos/${photoId()}.jpg`,
   description: getRandomArrayElement(PHOTO_DESCRIPTION),
   likes: getRandomInteger(15, 200),
