@@ -8,4 +8,10 @@ const getRandomInteger = (a, b) => {
 const getRandomArrayElement = (elements) =>
   elements[getRandomInteger(0, elements.length - 1)];
 
-export { getRandomArrayElement, getRandomInteger };
+const onEscKeydown = (evt, cb) => {
+  if (evt.key === 'Escape') {
+    cb();
+  }
+};
+
+export { getRandomArrayElement, getRandomInteger, onEscKeydown };
