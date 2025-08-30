@@ -38,6 +38,7 @@ const getRandomId = () => {
 };
 
 const photoId = getRandomId();
+const commonId = getRandomId();
 const commentId = getRandomId();
 
 const createComments = () => ({
@@ -48,7 +49,7 @@ const createComments = () => ({
 });
 
 const createPhoto = () => ({
-  id: photoId(),
+  id: commonId(),
   url: `photos/${photoId()}.jpg`,
   description: getRandomArrayElement(PHOTO_DESCRIPTION),
   likes: getRandomInteger(15, 200),
