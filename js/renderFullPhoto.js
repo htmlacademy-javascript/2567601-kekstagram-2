@@ -1,4 +1,4 @@
-import { renderComments } from './renderComments';
+import {cleanupComments, initComments, renderComments, renderLimitedComments} from './renderComments';
 import { onEscKeydown } from './util';
 
 import { photos } from './photos';
@@ -22,6 +22,7 @@ function closeFullPhoto() {
   fullPhotoContainer.classList.add('hidden');
   document.body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentEscKeydown);
+  cleanupComments();
 }
 
 export const openFullPhoto = (photoId) => {
@@ -35,7 +36,7 @@ export const openFullPhoto = (photoId) => {
 
   fullPhotoDescription.textContent = currentPhoto.description;
 
-  renderComments(currentPhoto.comments);
+  initComments(currentPhoto.comments);
 
   fullPhotoContainer.classList.remove('hidden');
   document.body.classList.add('modal-open');
