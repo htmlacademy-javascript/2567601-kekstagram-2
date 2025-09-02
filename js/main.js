@@ -1,4 +1,5 @@
 import './data';
+import './formValidation';
 import { picturesNode } from './photos';
 import { openFullPhoto } from './renderFullPhoto';
 
