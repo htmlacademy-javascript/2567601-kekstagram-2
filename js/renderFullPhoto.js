@@ -1,4 +1,4 @@
-import {cleanupComments, initComments, renderComments, renderLimitedComments} from './renderComments';
+import { cleanupComments, initComments } from './renderComments';
 import { onEscKeydown } from './util';
 
 import { photos } from './photos';

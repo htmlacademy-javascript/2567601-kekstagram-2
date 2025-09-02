@@ -8,7 +8,7 @@ const fullPhotoComment = fullPhotoComments.querySelector('.social__comment');
 const fullPhotoCountComments = fullPhotoContainer.querySelector('.social__comment-count');
 const fullPhotoLoader = fullPhotoContainer.querySelector('.social__comments-loader');
 
-export const renderComments = (commentsToRender) => {
+const renderComments = (commentsToRender) => {
   const fullPhotoCommentsFragment = document.createDocumentFragment();
 
   commentsToRender.forEach((comment) => {
@@ -24,7 +24,7 @@ export const renderComments = (commentsToRender) => {
   fullPhotoComments.append(fullPhotoCommentsFragment);
 };
 
-export const renderLimitedComments = () => {
+const renderLimitedComments = () => {
   if (currentCount === 0) {
     fullPhotoComments.innerHTML = '';
   }
@@ -46,7 +46,7 @@ export const renderLimitedComments = () => {
   currentCount += COUNT;
 };
 
-export const onCommentLoaderClick = () => {
+const onCommentLoaderClick = () => {
   renderLimitedComments();
 };
 
