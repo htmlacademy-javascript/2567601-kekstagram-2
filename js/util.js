@@ -14,4 +14,12 @@ const onEscKeydown = (evt, cb) => {
   }
 };
 
-export { getRandomArrayElement, getRandomInteger, onEscKeydown };
+const setVisibilityElement = (element, isHidden = true) => {
+  if (isHidden) {
+    element.classList.add('hidden');
+  } else {
+    element.classList.remove('hidden');
+  }
+};
+
+export { getRandomArrayElement, getRandomInteger, onEscKeydown, setVisibilityElement };

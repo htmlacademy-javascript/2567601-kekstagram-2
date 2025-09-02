@@ -1,5 +1,7 @@
 import './data';
 import './formValidation';
+import './zoomPhoto';
+import './filterPhotos';
 import { picturesNode } from './photos';
 import { openFullPhoto } from './renderFullPhoto';
 

@@ -1,12 +1,13 @@
 import { onEscKeydown } from './util';
+import { resetFilter } from './filterPhotos';
+import { loadPhoto } from './loadPhoto';
 
 const uploadImgForm = document.querySelector('.img-upload__form');
 const uploadImgFormElement = uploadImgForm.querySelector('.img-upload__input');
 const modalForm = uploadImgForm.querySelector('.img-upload__overlay');
 const pageBody = document.querySelector('body');
-const imgPreview = uploadImgForm.querySelector('.img-upload__preview').querySelector('img');
 const imgBtnUploadCansel = uploadImgForm.querySelector('.img-upload__cancel');
-const hashtagForm = document.querySelector('.text__hashtags');
+const hashtagForm = uploadImgForm.querySelector('.text__hashtags');
 const commentForm = uploadImgForm.querySelector('.text__description');
 
 let pristine;
@@ -26,6 +27,7 @@ function onCloseModalForm () {
   document.removeEventListener('click', onDocumentEscKeydown);
 
   toggleVisibility();
+  resetFilter();
 }
 
 function onDocumentEscKeydown (evt) {
@@ -33,10 +35,6 @@ function onDocumentEscKeydown (evt) {
     onEscKeydown(evt, onCloseModalForm);
   }
 }
-
-const loadPhoto = (evt) => {
-  imgPreview.src = URL.createObjectURL(evt.target.files[0]);
-};
 
 const commentValidation = (value) => {
   errorMessage = '';
