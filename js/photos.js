@@ -30,10 +30,17 @@ const renderPhotos = () => {
 
 const renderPhotoError = () => {
   const errorFragment = document.createDocumentFragment();
-  const errorItem = dataErrorTemplate.cloneNode(true); // Исправлено!
+  const errorItem = dataErrorTemplate.cloneNode(true);
   errorFragment.append(errorItem);
   pageBody.append(errorFragment);
+  return errorItem;
 };
+
+const closePhotoError = (cb) => {
+  let errorItem = cb();
+  errorItem.remove();
+  errorItem = null;
+}
 
 const getPhotoData = async () => {
   try {
@@ -41,6 +48,7 @@ const getPhotoData = async () => {
     renderPhotos();
   } catch (error) {
     renderPhotoError();
+    closePhotoError(renderPhotoError);
   }
 };
 
