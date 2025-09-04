@@ -1,17 +1,22 @@
 import { onEscKeydown } from './util';
 import { resetFilter } from './filterPhotos';
 import { loadPhoto } from './loadPhoto';
+import { fetchData } from './api';
 
 const uploadImgForm = document.querySelector('.img-upload__form');
 const uploadImgFormElement = uploadImgForm.querySelector('.img-upload__input');
 const modalForm = uploadImgForm.querySelector('.img-upload__overlay');
 const pageBody = document.querySelector('body');
 const imgBtnUploadCansel = uploadImgForm.querySelector('.img-upload__cancel');
+const imgBtnUploadSubmit = uploadImgForm.querySelector('.img-upload__submit');
 const hashtagForm = uploadImgForm.querySelector('.text__hashtags');
 const commentForm = uploadImgForm.querySelector('.text__description');
+const errorTemplate = document.querySelector('#error').content.querySelector('.error');
+const successTemplate = document.querySelector('#success').content.querySelector('.success');
 
 let pristine;
 let errorMessage = '';
+let currentMessageElement = null;
 
 const toggleVisibility = () => {
   modalForm.classList.toggle('hidden');
@@ -24,7 +29,7 @@ function onCloseModalForm () {
   commentForm.value = '';
 
   imgBtnUploadCansel.removeEventListener('click', onCloseModalForm);
-  document.removeEventListener('click', onDocumentEscKeydown);
+  document.removeEventListener('keydown', onDocumentEscKeydown);
 
   toggleVisibility();
   resetFilter();
@@ -35,6 +40,41 @@ function onDocumentEscKeydown (evt) {
     onEscKeydown(evt, onCloseModalForm);
   }
 }
+
+const closeMessage = () => {
+  if (currentMessageElement) {
+    currentMessageElement.remove();
+    currentMessageElement = null;
+  }
+  document.removeEventListener('keydown', onMessageEscKeydown);
+  document.removeEventListener('click', onDocumentClickMessage);
+};
+
+function onMessageEscKeydown (evt){
+  onEscKeydown(evt, closeMessage);
+}
+
+function onDocumentClickMessage (evt){
+  if (currentMessageElement && !currentMessageElement.contains(evt.target)) {
+    closeMessage();
+  }
+}
+
+const showMessage = (template) => {
+  const messageElement = template.cloneNode(true);
+  pageBody.append(messageElement);
+  currentMessageElement = messageElement;
+
+  const closeButton = messageElement.querySelector('.error__button') || messageElement.querySelector('.success__button');
+
+  if (closeButton) {
+    closeButton.addEventListener('click', closeMessage);
+  }
+
+  document.addEventListener('keydown', onMessageEscKeydown);
+  document.addEventListener('click', onDocumentClickMessage);
+};
+
 
 const commentValidation = (value) => {
   errorMessage = '';
@@ -75,6 +115,20 @@ const hashtagValidation = (value) => {
   });
 };
 
+const sendData = async (formElement) => {
+  try {
+    const sendDataForm = new FormData(formElement);
+    await fetchData.send(sendDataForm);
+    onCloseModalForm();
+    showMessage(successTemplate);
+  } catch {
+    showMessage(errorTemplate);
+  } finally {
+    imgBtnUploadSubmit.disabled = false;
+    imgBtnUploadSubmit.textContent = 'Опубликовать';
+  }
+};
+
 const initFormValidation = () => {
   pristine = new Pristine(uploadImgForm, {
     classTo: 'img-upload__field-wrapper',
@@ -93,6 +147,16 @@ const initFormValidation = () => {
     commentValidation,
     'Длина комментария должна быть не больше 140 символов'
   );
+
+  uploadImgForm.addEventListener('submit', async (evt) => {
+    evt.preventDefault();
+
+    if (pristine.validate()) {
+      imgBtnUploadSubmit.disabled = true;
+      imgBtnUploadSubmit.textContent = 'Публикую...';
+      await sendData(uploadImgForm);
+    }
+  });
 };
 
 uploadImgFormElement.addEventListener('change',(evt) => {
