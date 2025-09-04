@@ -5,7 +5,7 @@ const pictureContainerTemplate = document
   .querySelector('#picture')
   .content.querySelector('.picture');
 
-const dataErrorTemplate = document.querySelector('#data-error').content;
+const dataErrorTemplate = document.querySelector('#data-error').content.querySelector('.data-error');
 const pageBody = document.querySelector('body');
 
 let photos = [];
@@ -29,26 +29,22 @@ const renderPhotos = () => {
 };
 
 const renderPhotoError = () => {
-  const errorFragment = document.createDocumentFragment();
   const errorItem = dataErrorTemplate.cloneNode(true);
-  errorFragment.append(errorItem);
-  pageBody.append(errorFragment);
+  pageBody.append(errorItem);
   return errorItem;
 };
 
-const closePhotoError = (cb) => {
-  let errorItem = cb();
+const closePhotoError = (errorItem) => {
   errorItem.remove();
-  errorItem = null;
-}
+};
 
 const getPhotoData = async () => {
   try {
     photos = await fetchData.get();
     renderPhotos();
   } catch (error) {
-    renderPhotoError();
-    closePhotoError(renderPhotoError);
+    const errorItem = renderPhotoError();
+    setTimeout(() => closePhotoError(errorItem), 5000);
   }
 };
 
