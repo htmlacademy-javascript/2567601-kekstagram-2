@@ -52,7 +52,6 @@ export const resetFilter = () => {
   imgPreview.style.filter = 'none';
   effectLevelValue.value = '';
   setVisibilityElement(effectLevelContainer, true);
-  debugger;
 };
 
 const filterConfig = {
