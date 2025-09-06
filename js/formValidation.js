@@ -1,7 +1,7 @@
 import { onEscKeydown } from './util';
 import { resetFilter } from './filterPhotos';
 import { loadPhoto } from './loadPhoto';
-import { fetchData } from './api';
+import { photoData } from './api';
 
 const uploadImgForm = document.querySelector('.img-upload__form');
 const uploadImgFormElement = uploadImgForm.querySelector('.img-upload__input');
@@ -118,7 +118,7 @@ const hashtagValidation = (value) => {
 const sendData = async (formElement) => {
   try {
     const sendDataForm = new FormData(formElement);
-    await fetchData.send(sendDataForm);
+    await photoData.send(sendDataForm);
     onCloseModalForm();
     showMessage(successTemplate);
   } catch {

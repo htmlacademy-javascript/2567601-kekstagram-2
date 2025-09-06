@@ -1,4 +1,5 @@
-import { fetchData } from './api';
+import { photoData } from './api.js';
+import { renderByFilter } from './filter.js';
 
 const picturesNode = document.querySelector('.pictures');
 const pictureContainerTemplate = document
@@ -10,10 +11,12 @@ const pageBody = document.querySelector('body');
 
 let photos = [];
 
-const renderPhotos = () => {
+const renderPhotos = (photosData = photos) => {
+  picturesNode.querySelectorAll('.picture').forEach((picture) => picture.remove());
+
   const photoFragment = document.createDocumentFragment();
 
-  photos.forEach(({id, url, description, likes, comments}) => {
+  photosData.forEach(({id, url, description, likes, comments}) => {
     const photoItem = pictureContainerTemplate.cloneNode(true);
 
     photoItem.dataset.pictureId = id;
@@ -40,7 +43,8 @@ const closePhotoError = (errorItem) => {
 
 const getPhotoData = async () => {
   try {
-    photos = await fetchData.get();
+    photos = await photoData.get();
+    renderByFilter(photos);
     renderPhotos();
   } catch (error) {
     const errorItem = renderPhotoError();
@@ -50,4 +54,4 @@ const getPhotoData = async () => {
 
 getPhotoData();
 
-export { picturesNode, photos };
+export { picturesNode, photos, renderPhotos };

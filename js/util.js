@@ -22,4 +22,15 @@ const setVisibilityElement = (element, isHidden = true) => {
   }
 };
 
-export { getRandomArrayElement, getRandomInteger, onEscKeydown, setVisibilityElement };
+function debounce (callback, timeoutDelay = 500) {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+}
+
+
+export { getRandomArrayElement, getRandomInteger, onEscKeydown, setVisibilityElement, debounce };
