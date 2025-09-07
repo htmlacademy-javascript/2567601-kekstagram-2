@@ -45,7 +45,6 @@ const getPhotoData = async () => {
   try {
     photos = await photoData.get();
     renderByFilter(photos);
-    renderPhotos();
   } catch (error) {
     const errorItem = renderPhotoError();
     setTimeout(() => closePhotoError(errorItem), 5000);
