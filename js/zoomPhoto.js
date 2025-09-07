@@ -9,10 +9,15 @@ const imgPreview = uploadImgForm.querySelector('.img-upload__preview').querySele
 const changeScale = (direction) => {
   const currentValue = parseInt(scaleValue.value, 10);
   let newValue = currentValue + (STEP * direction);
-  newValue = Math.max(0, Math.min(newValue, 100));
+  newValue = Math.max(STEP, Math.min(newValue, 100));
 
   scaleValue.value = `${newValue}%`;
   imgPreview.style.transform = `scale(${newValue / 100})`;
+};
+
+export const resetZoomPhoto = () => {
+  imgPreview.style.transform = 'scale(1)';
+  scaleValue.value = '100%';
 };
 
 plusButton.addEventListener('click', () => {

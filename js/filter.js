@@ -11,6 +11,10 @@ const imgFilters = document.querySelector('.img-filters');
 let currentFilter = Filter.DEFAULT;
 let pictures = [];
 
+const debounceFilterElement = debounce((filteredPictures) => {
+  renderPhotos(filteredPictures);
+}, 500);
+
 const applyPhotoFiltering = () => {
   let filteredPictures = [];
 
@@ -26,23 +30,19 @@ const applyPhotoFiltering = () => {
       break;
   }
 
-  const picturesNode = document.querySelector('.pictures');
-  picturesNode.querySelectorAll('.picture').forEach((picture) => picture.remove());
-
-  debounce(() => {
-    renderPhotos(filteredPictures);
-  }, 500)();
+  debounceFilterElement(filteredPictures);
 };
 
 const onFilterClick = (evt) => {
-  const targetButton = evt.target;
-
-  if (!targetButton.matches('button') || targetButton.id === currentFilter) {
+  const targetButton = evt.target.closest('button.img-filters__button');
+  if (!targetButton || targetButton.id === currentFilter) {
     return;
   }
 
   const activeButton = document.querySelector('.img-filters__button--active');
-  activeButton.classList.remove('img-filters__button--active');
+  if (activeButton) {
+    activeButton.classList.remove('img-filters__button--active');
+  }
 
   targetButton.classList.add('img-filters__button--active');
   currentFilter = targetButton.id;
@@ -54,6 +54,7 @@ const renderByFilter = (picturesData)=> {
   imgFilters.classList.remove('img-filters--inactive');
   imgFilters.addEventListener('click', onFilterClick);
   pictures = picturesData;
+  renderPhotos(pictures);
 };
 
 export { renderByFilter };

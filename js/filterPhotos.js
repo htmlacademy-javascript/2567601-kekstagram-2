@@ -1,10 +1,11 @@
-import { imgPreview } from './loadPhoto';
-import { setVisibilityElement } from './util';
+import {imgPreview} from './loadPhoto';
+import {setVisibilityElement} from './util';
 
 const effectList = document.querySelector('.effects__list');
 const effectLevelValue = document.querySelector('.effect-level__value');
 const effectSlider = document.querySelector('.effect-level__slider');
 const effectLevelContainer = document.querySelector('.img-upload__effect-level');
+const effectLevelNone = document.getElementById('effect-none');
 
 let effect = '';
 
@@ -41,10 +42,15 @@ const updateSliderOptions = (min, max, step) => {
 };
 
 const applyFilter = (value) => {
-  if (effect === 'blur') {
-    imgPreview.style.filter = `${effect}(${value}px)`;
-  } else {
-    imgPreview.style.filter = `${effect}(${value})`;
+  switch (effect) {
+    case 'blur':
+      imgPreview.style.filter = `${effect}(${value}px)`;
+      break;
+    case 'invert':
+      imgPreview.style.filter = `${effect}(${value}%)`;
+      break;
+    default:
+      imgPreview.style.filter = `${effect}(${value})`;
   }
 };
 
@@ -52,6 +58,7 @@ export const resetFilter = () => {
   imgPreview.style.filter = 'none';
   effectLevelValue.value = '';
   setVisibilityElement(effectLevelContainer, true);
+  effectLevelNone.checked = true;
 };
 
 const filterConfig = {
@@ -68,7 +75,7 @@ const filterConfig = {
     effect = 'invert';
   },
   'effect-phobos': () => {
-    updateSliderOptions(0, 3, 1);
+    updateSliderOptions(0, 3, 0.1);
     effect = 'blur';
   },
   'effect-heat': () => {

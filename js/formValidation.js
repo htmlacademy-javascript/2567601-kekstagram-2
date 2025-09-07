@@ -2,6 +2,7 @@ import { onEscKeydown } from './util';
 import { resetFilter } from './filterPhotos';
 import { loadPhoto } from './loadPhoto';
 import { photoData } from './api';
+import { resetZoomPhoto } from './zoomPhoto';
 
 const uploadImgForm = document.querySelector('.img-upload__form');
 const uploadImgFormElement = uploadImgForm.querySelector('.img-upload__input');
@@ -21,41 +22,58 @@ let currentMessageElement = null;
 const toggleVisibility = () => {
   modalForm.classList.toggle('hidden');
   pageBody.classList.toggle('modal-open');
+  const picturesNode = document.querySelector('.pictures');
+  if (picturesNode && picturesNode.classList.contains('hidden')) {
+    picturesNode.classList.remove('hidden');
+  }
 };
 
-function onCloseModalForm () {
+function onCloseModalForm() {
   uploadImgFormElement.value = '';
   hashtagForm.value = '';
   commentForm.value = '';
+  errorMessage = '';
+  resetFilter();
+  resetZoomPhoto();
+  pristine.reset();
 
   imgBtnUploadCansel.removeEventListener('click', onCloseModalForm);
   document.removeEventListener('keydown', onDocumentEscKeydown);
+  document.removeEventListener('click', onDocumentClickModal);
 
   toggleVisibility();
-  resetFilter();
 }
 
-function onDocumentEscKeydown (evt) {
-  if (!commentForm.value && !hashtagForm.value) {
+function onDocumentEscKeydown(evt) {
+  if (currentMessageElement) {
+    onEscKeydown(evt, closeMessage);
+  } else if (document.activeElement !== hashtagForm && document.activeElement !== commentForm) {
     onEscKeydown(evt, onCloseModalForm);
   }
 }
 
-const closeMessage = () => {
+function onDocumentClickModal(evt) {
+  if (!modalForm.contains(evt.target) && evt.target !== uploadImgFormElement && !currentMessageElement) {
+    onCloseModalForm();
+  }
+}
+
+function closeMessage() {
   if (currentMessageElement) {
     currentMessageElement.remove();
     currentMessageElement = null;
   }
   document.removeEventListener('keydown', onMessageEscKeydown);
   document.removeEventListener('click', onDocumentClickMessage);
-};
+  document.removeEventListener('click', onDocumentClickModal);
+}
 
-function onMessageEscKeydown (evt){
+function onMessageEscKeydown(evt) {
   onEscKeydown(evt, closeMessage);
 }
 
-function onDocumentClickMessage (evt){
-  if (currentMessageElement && !currentMessageElement.contains(evt.target)) {
+function onDocumentClickMessage(evt) {
+  if (currentMessageElement && !currentMessageElement.querySelector('.success__inner, .error__inner').contains(evt.target)) {
     closeMessage();
   }
 }
@@ -64,6 +82,10 @@ const showMessage = (template) => {
   const messageElement = template.cloneNode(true);
   pageBody.append(messageElement);
   currentMessageElement = messageElement;
+
+  if (messageElement.classList.contains('hidden')) {
+    messageElement.classList.remove('hidden');
+  }
 
   const closeButton = messageElement.querySelector('.error__button') || messageElement.querySelector('.success__button');
 
@@ -75,17 +97,17 @@ const showMessage = (template) => {
   document.addEventListener('click', onDocumentClickMessage);
 };
 
-
 const commentValidation = (value) => {
   errorMessage = '';
 
   const commentText = value.trim().split('');
 
-  if(!commentText) {
+  if (!commentText || commentText.length <= 140) {
     return true;
+  } else {
+    errorMessage = 'Длина комментария должна быть не больше 140 символов';
+    return false;
   }
-
-  return commentText.length <= 140;
 };
 
 const hashtagValidation = (value) => {
@@ -145,7 +167,7 @@ const initFormValidation = () => {
   pristine.addValidator(
     commentForm,
     commentValidation,
-    'Длина комментария должна быть не больше 140 символов'
+    () => errorMessage
   );
 
   uploadImgForm.addEventListener('submit', async (evt) => {
@@ -154,17 +176,18 @@ const initFormValidation = () => {
     if (pristine.validate()) {
       imgBtnUploadSubmit.disabled = true;
       imgBtnUploadSubmit.textContent = 'Публикую...';
-      await sendData(uploadImgForm);
+      sendData(uploadImgForm);
     }
   });
 };
 
-uploadImgFormElement.addEventListener('change',(evt) => {
+uploadImgFormElement.addEventListener('change', (evt) => {
+  pristine.reset();
   toggleVisibility();
-
   loadPhoto(evt);
   imgBtnUploadCansel.addEventListener('click', onCloseModalForm);
   document.addEventListener('keydown', onDocumentEscKeydown);
+  document.addEventListener('click', onDocumentClickModal);
 });
 
 initFormValidation();
