@@ -5,9 +5,6 @@ const getRandomInteger = (a, b) => {
   return Math.floor(result);
 };
 
-const getRandomArrayElement = (elements) =>
-  elements[getRandomInteger(0, elements.length - 1)];
-
 const onEscKeydown = (evt, cb) => {
   if (evt.key === 'Escape') {
     cb();
@@ -34,4 +31,4 @@ function debounce (callback, timeoutDelay = 500) {
 }
 
 
-export { getRandomArrayElement, getRandomInteger, onEscKeydown, setVisibilityElement, debounce };
+export { getRandomInteger, onEscKeydown, setVisibilityElement, debounce };

@@ -46,7 +46,7 @@ function onCloseModalForm() {
 
 function onDocumentEscKeydown(evt) {
   if (currentMessageElement) {
-    onEscKeydown(evt, closeMessage);
+    onEscKeydown(evt, onMessageClose);
   } else if (document.activeElement !== hashtagForm && document.activeElement !== commentForm) {
     onEscKeydown(evt, onCloseModalForm);
   }
@@ -58,7 +58,7 @@ function onDocumentClickModal(evt) {
   }
 }
 
-function closeMessage() {
+function onMessageClose() {
   if (currentMessageElement) {
     currentMessageElement.remove();
     currentMessageElement = null;
@@ -69,12 +69,12 @@ function closeMessage() {
 }
 
 function onMessageEscKeydown(evt) {
-  onEscKeydown(evt, closeMessage);
+  onEscKeydown(evt, onMessageClose);
 }
 
 function onDocumentClickMessage(evt) {
   if (currentMessageElement && !currentMessageElement.querySelector('.success__inner, .error__inner').contains(evt.target)) {
-    closeMessage();
+    onMessageClose();
   }
 }
 
@@ -90,7 +90,7 @@ const showMessage = (template) => {
   const closeButton = messageElement.querySelector('.error__button') || messageElement.querySelector('.success__button');
 
   if (closeButton) {
-    closeButton.addEventListener('click', closeMessage);
+    closeButton.addEventListener('click', onMessageClose);
   }
 
   document.addEventListener('keydown', onMessageEscKeydown);
